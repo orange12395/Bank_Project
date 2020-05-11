@@ -1,0 +1,211 @@
+#include<iostream>
+#include<cstring>
+#define NAME_LEN 20
+using namespace std;
+
+int mem_cnt = 0;
+
+typedef struct
+{
+	int accID; //계좌번호
+	int balance; //잔액
+	char cusName[NAME_LEN];
+
+}Account;
+
+Account *acc = new Account[100];
+
+void make_account()
+{
+
+	if (mem_cnt >= 100)
+	{
+		cout << "새로운 계좌 생성 불가" << endl;
+	}
+	cout << "[계좌개설]" << endl;
+	cout << "계좌ID: ";
+	cin >> acc[mem_cnt].accID;
+
+	for (int i = 0; i < mem_cnt; i++)
+	{
+		if (acc[i].accID == acc[mem_cnt].accID)
+		{
+			cout << "계좌가 중복됨" << endl;
+			cout << endl;
+			return;
+		}
+	}
+
+	cout << "이  름: ";
+	cin >> acc[mem_cnt].cusName;
+
+	for (int i = 0; i < mem_cnt; i++)
+	{
+		const char* str1 = acc[i].cusName;
+		const char* str2 = acc[mem_cnt].cusName;
+		if (strcmp(str1, str2) == 0)
+		{
+			cout << "고객은 한개의 계좌만 소유가능" << endl;
+			cout << endl;
+			return;
+		}
+	}
+
+	cout << "입금액: ";
+	cin >> acc[mem_cnt].balance;
+
+	if (acc[mem_cnt].balance < 10)
+	{
+		cout << "10원 이상을 넣어주십시요" << endl;
+		cout << endl;
+		return;
+	}
+
+	mem_cnt++;
+	cout << endl;
+}
+
+void deposit()
+{
+	int ID;
+	int money=0;
+
+	if (mem_cnt == 0)
+	{
+		cout << "정보가 없음" << endl;
+		return;
+	}
+
+	cout << "[입    금]" << endl;
+	cout << "계좌ID: ";
+	cin >> ID;
+
+	for (int i = 0; i < mem_cnt; i++)
+	{
+		if (acc[i].accID == ID)
+		{
+			cout << "입금액: ";
+			cin >> money;
+			if (money < 1)
+			{
+				cout << "입금액은 0보다 커야 합니다" << endl;
+				cout << endl;
+				return;
+			}
+
+			acc[i].balance += money;
+			cout << money << "원이 입금되었습니다" << endl;
+			cout << "잔액: " << acc[i].balance << endl;
+			cout << endl;
+		}
+		else cout << "유효하지 않은 ID 입니다." << endl;
+		cout << endl;
+	
+	}
+}
+
+void withdraw()
+{
+	int ID;
+	int money = 0;
+
+	if (mem_cnt == 0)
+	{
+		cout << "정보가 없음" << endl;
+		return;
+	}
+
+	cout << "[출    금]" << endl;
+	cout << "계좌ID: ";
+	cin >> ID;
+
+	for (int i = 0; i < mem_cnt; i++)
+	{
+		if (acc[i].accID == ID)
+		{
+			cout << "출금액: ";
+			cin >> money;
+			if (money < 1)
+			{
+				cout << "출금액은 0보다 커야 합니다" << endl;
+				cout << endl;
+				return;
+			}
+			else if (acc[i].balance < money)
+			{
+				cout << "잔액이 부족합니다." << endl;
+				cout << "잔액: " << acc[i].balance << endl;
+			}
+			else
+			{
+				acc[i].balance -= money;
+				cout << money << "원이 출금되었습니다" << endl;
+				cout << "잔액: " << acc[i].balance << endl;
+				cout << endl;
+			}
+		}
+		else cout << "유효하지 않은 ID 입니다." << endl;
+		cout << endl;
+
+	}
+}
+
+void print_all()
+{
+	if (mem_cnt == 0)
+	{
+		cout << "등록된 계좌 없음" << endl;
+	}
+	for (int i = 0; i < mem_cnt; i++)
+	{
+		cout << "계좌번호: " << acc[i].accID << endl;
+		cout << "이름: " << acc[i].cusName << endl;
+		cout << "잔액: " << acc[i].balance << endl;
+		cout << endl;
+	}
+}
+
+void main()
+{
+	while (1)
+	{
+		int a;
+		cout << "-----menu-----" << endl;
+		cout << "1. 계좌설개" << endl;
+		cout << "2. 입    금" << endl;
+		cout << "3. 출    금" << endl;
+		cout << "4. 계좌정보 전체 출력" << endl;
+		cout << "5. 프로그램 종료" << endl;
+		cout << "선택: ";
+
+		cin >> a;
+
+		cout << endl;
+
+		switch (a)
+		{
+		case 1:
+			make_account();
+			break;
+		case 2:
+			deposit();
+			break;
+		case 3:
+			withdraw();
+			break;
+		case 4:
+			print_all();
+			break;
+		case 5:
+			if (acc != NULL)
+				delete[] acc;
+			return;
+		default:
+			cout << "1~5 까지 선택해주세요." << endl;
+			cout << endl;
+		}
+
+	}
+
+}
+
